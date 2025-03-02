@@ -11,8 +11,8 @@ const Login = () => {
   const navigate = useNavigate();
  
 
-  const [emailId, setEmailId] = useState("sid@gmail.com");
-  const [password, setPassword] = useState("Sidd@123");
+  const [emailId, setEmailId] = useState("radha@gmail.com");
+  const [password, setPassword] = useState("Radha@123");
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
