@@ -22,6 +22,11 @@ const Feed = () => {
     getFeed();
   }, []);
 
+  if (!feed) return;
+
+  if(feed.length <= 0) return<h1 className="text-center text-xl font-semibold text-gray-700 py-5">
+  No New Users Found...
+</h1> 
   return (
     feed && (
       <div>

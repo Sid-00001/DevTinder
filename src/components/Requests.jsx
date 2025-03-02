@@ -6,7 +6,23 @@ import { addRequests } from "../utils/requestsSlice";
 
 const Requests = () => {
   const dispatch = useDispatch();
-  const requests = useSelector((store) => store.request || []);
+  const requests = useSelector((store) => store.request) || [];
+
+  // Fetch requests from the backend
+  const reviewRequest = async (status, requestId) => {
+    try {
+      const res = await axios.post(
+        `${BASE_BACKEND_URL}/request/review/${status}/${requestId}`,
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      fetchRequests();
+    } catch (error) {
+      console.error("Error updating request status:", error);
+    }
+  };
 
   const fetchRequests = async () => {
     try {
@@ -17,6 +33,7 @@ const Requests = () => {
         }
       );
       dispatch(addRequests(res?.data?.data));
+     
     } catch (error) {
       console.error("Error fetching connections:", error);
     }
@@ -38,7 +55,7 @@ const Requests = () => {
   return (
     <div className="container mx-auto px-4 py-6">
       <h1 className="text-3xl font-bold text-center mb-8 text-primary">
-      Requests
+        Requests
       </h1>
       <div className="flex flex-wrap justify-center gap-6">
         {requests.map((request) => {
@@ -60,14 +77,26 @@ const Requests = () => {
                   {firstName} {lastName}
                 </h2>
                 <p className="text-gray-500">
-                  <strong>{age || "N/A"} ,  {gender || "N/A"}</strong> 
+                  <strong>
+                    {age || "N/A"} , {gender || "N/A"}
+                  </strong>
                 </p>
-              
+
                 <p className="text-sm text-gray-500 mt-1 italic">{about}</p>
               </div>
               <div className="mt-4 sm:mt-0 flex gap-4">
-                <button className="btn btn-soft btn-accent">Accept</button>
-                <button className="btn btn-soft btn-info">Reject</button>
+                <button
+                  onClick={() => reviewRequest("accepted", request._id)}
+                  className="btn btn-success"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => reviewRequest("rejected", request._id)}
+                  className="btn btn-error"
+                >
+                  Reject
+                </button>
               </div>
             </div>
           );

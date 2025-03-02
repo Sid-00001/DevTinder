@@ -5,19 +5,20 @@ import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_BACKEND_URL } from "../utils/constants";
 
-
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
- 
 
-  const [emailId, setEmailId] = useState("radha@gmail.com");
-  const [password, setPassword] = useState("Radha@123");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [isLoginForm, setIsLoginForm] = useState(true);
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent form submission default behavior
-  
+
     try {
       const res = await axios.post(
         BASE_BACKEND_URL + "/login",
@@ -30,18 +31,59 @@ const Login = () => {
       setError(err.response?.data?.error || "Login failed"); // Properly set the error message
     }
   };
-  
 
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post(
+        BASE_BACKEND_URL + "/signup",
+        { firstName, lastName, emailId, password },
+        { withCredentials: true }
+      );
+      dispatch(addUser(res.data.data));
+      navigate("/profile"); // Redirect only if signup is successful
+    } catch (err) {
+      setError(err.response?.data?.error || "Signup failed"); // Properly set the error message
+    }
+  };
   return (
     <div className="flex justify-center my-10">
       <div className="card bg-base-300 text-primary-content w-96">
         <div className="card-body">
-          <h2 className="card-title text-center">LOGIN</h2>
-          <form onSubmit={handleLogin}>
+          <h2 className="card-title text-center">
+            {isLoginForm ? "LOGIN" : "SIGNUP"}
+          </h2>
+          <form onSubmit={isLoginForm ? handleLogin : handleSignup}>
             <div className="form-control w-full max-w-xs">
+              {!isLoginForm && (
+                <>
+                  <label className="label mb-0.5">First Name</label>
+                  <div className="input validator flex items-center outline-none border-transparent focus:ring-0 mb-2">
+                    <input
+                      type="text"
+                      placeholder="your first name"
+                      required
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      className="w-full p-2"
+                    />
+                  </div>
+                  <label className="label">Last Name</label>
+                  <div className="input validator flex items-center outline-none border-transparent focus:ring-0 mb-2">
+                    <input
+                      type="text"
+                      placeholder="your last name"
+                      required
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      className="w-full p-2"
+                    />
+                  </div>
+                </>
+              )}
               {/* Email Input */}
               <label className="label">Email</label>
-              <div className="input validator flex items-center outline-none border-transparent focus:ring-0">
+              <div className="input validator flex items-center outline-none border-transparent focus:ring-0 mb-2">
                 <svg
                   className="h-5 w-5 opacity-50 mr-2"
                   xmlns="http://www.w3.org/2000/svg"
@@ -70,7 +112,7 @@ const Login = () => {
 
               {/* Password Input */}
               <label className="label mt-2">Password</label>
-              <div className="input validator flex items-center outline-none border-transparent focus:ring-0">
+              <div className="input validator flex items-center outline-none border-transparent focus:ring-0 mb-2">
                 <svg
                   className="h-5 w-5 opacity-50 mr-2"
                   xmlns="http://www.w3.org/2000/svg"
@@ -112,14 +154,21 @@ const Login = () => {
             {/* Submit Button */}
             <div className="card-actions justify-end mt-4">
               <button type="submit" className="btn btn-primary w-full">
-                Login
+                {isLoginForm ? "Login" : "Signup"}
               </button>
             </div>
           </form>
+          <p
+            className=" text-sm mt-2 cursor-pointer"
+            onClick={() => setIsLoginForm(!isLoginForm)}
+          >
+            {isLoginForm
+              ? "New User? Signup Here"
+              : "Existing User? Login Here"}
+          </p>
         </div>
       </div>
     </div>
   );
 };
-
 export default Login;
