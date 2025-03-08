@@ -29,7 +29,7 @@ const Connections = () => {
   }, [dispatch]);
 
   if (!actualConnections)
-    return <div className="text-center text-gray-500 py-5">Loading...</div>;
+    return <div className="text-center py-5">Loading...</div>;
   if (actualConnections.length === 0)
     return (
       <h1 className="text-center text-xl font-semibold text-gray-700 py-5">
