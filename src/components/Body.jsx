@@ -33,9 +33,9 @@ const Body = () => {
 
   return (
     <div>
-      {/* <Navbar /> */}
+      <Navbar />
+
       <Outlet />
-      {/* <Footer /> */}
     </div>
   );
 };

@@ -1,9 +1,7 @@
 import axios from "axios";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { BASE_BACKEND_URL } from "../utils/constants";
-import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { removeUser } from "../utils/userSlice";
 
 const Navbar = () => {
@@ -16,69 +14,75 @@ const Navbar = () => {
       await axios.post(
         BASE_BACKEND_URL + "/logout",
         {},
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       dispatch(removeUser());
-      return navigate("/login");
+      navigate("/login");
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <>
-      <div className="navbar bg-base-300 shadow-sm">
-        <div className="flex-1">
-          <Link to={user ? "/" : "/login"} className="btn btn-ghost text-xl">
-            DevTinder
-          </Link>
-        </div>
-        <div className="flex gap-2">
-          {user && (
+    <nav className="bg-base-200 shadow-lg fixed top-0 left-0 w-full z-50">
+      <div className="container mx-auto flex items-center justify-between p-4">
+        <Link
+          to={user ? "/" : "/login"}
+          className="text-xl font-bold text-white hover:text-primary transition-all"
+        >
+          DevTinder
+        </Link>
+
+        {user && (
+          <div className="flex gap-2">
             <div className="dropdown dropdown-end mx-5">
               <div
                 tabIndex={0}
                 role="button"
-                className="btn btn-ghost btn-circle avatar"
+                className="btn btn-ghost btn-circle avatar hover:bg-base-300 transition-all"
               >
-                <div className="w-10 rounded-full ">
-                  <img alt="user profile" src={user.photoUrl} />{" "}
+                <div className="w-10 rounded-full border border-primary">
+                  <img alt="user profile" src={user.photoUrl} />
                 </div>
               </div>
               <ul
                 tabIndex={0}
-                className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
+                className="menu menu-sm dropdown-content bg-base-100 text-black rounded-lg z-10 mt-3 w-52 p-2 shadow-lg border border-neutral opacity-95"
               >
                 <li>
-                  <Link to="/profile" className="justify-between">
-                    Profile
-                    <span className="badge">New</span>
+                  <Link to="/profile" className="hover:text-primary">
+                    Profile <span className="badge">New</span>
                   </Link>
                 </li>
-                <li><Link to="/connections">
-                Connections
-                </Link>
-                
-                </li>
-                <li><Link to="/requests">
-                Requests
-                </Link>
-                
+                <li>
+                  <Link to="/connections" className="hover:text-primary">
+                    Connections
+                  </Link>
                 </li>
                 <li>
-                  <a>Settings</a>
+                  <Link to="/requests" className="hover:text-primary">
+                    Requests
+                  </Link>
                 </li>
                 <li>
-                  <a onClick={handleLogout}>Logout</a>
+                  <Link to="/settings" className="hover:text-primary">
+                    Settings
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left hover:text-primary"
+                  >
+                    Logout
+                  </button>
                 </li>
               </ul>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
-    </>
+    </nav>
   );
 };
 

@@ -1,10 +1,11 @@
 import { motion } from "framer-motion";
 
-const FloatingShape = ({ color = "bg-blue-500", size = "w-10 h-10", top = "50%", left = "50%", delay = 0 }) => {
+const FloatingShape = ({ color = "#70c167", size = "w-10 h-10", top = "50%", left = "50%", delay = 0 }) => {
   return (
     <motion.div
-      className={`absolute rounded-full ${color} ${size} opacity-20 blur-xl`}
+      className={`absolute rounded-full ${size} opacity-20 blur-xl`}
       style={{
+        backgroundColor: color, // ✅ Ensures correct color is applied
         top: typeof top === "number" ? `${top}px` : top,
         left: typeof left === "number" ? `${left}px` : left,
       }}
